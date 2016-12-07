@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<robot name="object">
+
+<!-- Disable collision pairs of inner links -->
+  <disable_collisions link1="base_link"
+		      link2="l_mobile_leg" />
+  <disable_collisions link1="base_link"
+		      link2="l_bounding_sphere" />
+  <disable_collisions link1="l_mobile_leg"
+		      link2="l_bounding_sphere" />
+
+</robot>

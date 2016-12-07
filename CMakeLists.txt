@@ -41,11 +41,13 @@ install(DIRECTORY meshes/
  # robot URDF
 install(FILES
   urdf/monopod.urdf
+  urdf/monopod_mesh.urdf
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/urdf)
 
  # robot SRDF
 install(FILES
   srdf/monopod.srdf
+  srdf/monopod_mesh.srdf
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/srdf)
 
 
@@ -53,5 +55,10 @@ install (FILES
   src/hpp/corbaserver/monopod/robot.py
   src/hpp/corbaserver/monopod/__init__.py
   DESTINATION ${PYTHON_SITELIB}/hpp/corbaserver/monopod)
+
+install (FILES
+  src/hpp/corbaserver/monopod_mesh/robot.py
+  src/hpp/corbaserver/monopod_mesh/__init__.py
+  DESTINATION ${PYTHON_SITELIB}/hpp/corbaserver/monopod_mesh)
 
 SETUP_PROJECT_FINALIZE()

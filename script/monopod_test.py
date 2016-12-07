@@ -2,7 +2,8 @@
 # Script which goes with monopod_description package.
 # Easy way to test parabola-planning algo on SO3 joint + 1 transl DOF.
 
-from hpp.corbaserver.monopod import Robot
+#from hpp.corbaserver.monopod import Robot
+from hpp.corbaserver.monopod_mesh import Robot # primitives cause weird collisions with envir
 from hpp.corbaserver import Client
 from hpp.corbaserver import ProblemSolver
 from viewer_display_library import normalizeDir, plotCone, plotFrame, plotThetaPlane, shootNormPlot, plotStraightLine, plotConeWaypoints, plotSampleSubPath, contactPosition
@@ -17,7 +18,7 @@ robot = Robot ('robot')
 #robot.setJointBounds('base_joint_xyz', [1.6, 6.9, -2.2, 1.5, 0, 3]) # first goal
 #robot.setJointBounds('base_joint_xyz', [-0.3, 6.9, -2.2, 2.4, 0, 3]) # second goal
 #robot.setJointBounds('base_joint_xyz', [-2.6, 6.9, -2.2, 2.4, 0, 3]) # third goal
-robot.setJointBounds('base_joint_xyz', [-6, 6.9, -2.8, 3.2, 0, 3]) # start to bottom
+robot.setJointBounds('base_joint_xyz', [-6, 6.9, -2.5, 2.6, 0, 3]) # start to bottom
 #robot.setJointBounds('base_joint_xyz', [-6, -2.2, -2.4, 3, 0, 8]) # bottom to ultimate
 #robot.setJointBounds('base_joint_xyz', [-5, -2.2, -0.1, 2.8, 0, 6]) # bottom to middle column
 #robot.setJointBounds('base_joint_xyz', [-5, -2.2, -0.1, 2.8, 0, 3]) # bottom to bottom 1
@@ -30,30 +31,33 @@ cl = robot.client
 from hpp.gepetto import Viewer, PathPlayer
 r = Viewer (ps)
 pp = PathPlayer (robot.client, r)
+r.client.gui.setVisibility('robot/l_bounding_sphere',"OFF")
 r.loadObstacleModel ("animals_description","scene_jump_harder","scene_jump_harder")
 
 # Configs : [x, y, z, q1, q2, q3, q4, dir.x, dir.y, dir.z, theta]
-r([0, 0, 0, 1, 0, 0, 0, -0.1, 0, 0, 1, 0])
-q11 = [6.4, 0.5, 0.8, 0, 0, 0, 1, -0.1, 0, 0, 1, 0] # start
-#q11 = [-3.5, 1.7, 0.4, 0, 0, 0, 1, 0, 0, 1, Pi] # bottom of column
+
+q11 = [6.4, 0.5, 0.8, 0, 0, 0, 1, -0.1, 0, 0, 1, Pi] # start
+#q11 = [-3.5, 1.7, 0.4, 0, 0, 0, 1, -0.1, 0, 0, 1, Pi] # bottom of column
 r(q11)
-#q22 = [2.6, -1.4, 0.35, 0, 0, 0, 1, 0, 0, 1, Pi] # first plateform
-#q22 = [0.7, 1.55, 0.4, 0, 0, 0, 1, 0, 0, 1, Pi] # second plateform
-#q22 = [-1.7, -1.5, 0.4, 0, 0, 0, 1, 0, 0, 1, Pi] # third plateform
-q22 = [-3.5, 1.7, 0.4, 0, 0, 0, 1, 0, 0, 1, Pi] # bottom of column
-#q22 = [-3.3, 1.5, 3.4, 0, 0, 0, 1, 0, 0, 1, Pi] # in column
-#q22 = [-4.2, 0.9, 1.7, 0, 0, 0, 1, 0, 0, 1, Pi] # bottom 1 of column
-#q22 = [-4.4, 0.9, 4.1, 0, 0, 0, 1, 0, 0, 1, Pi] # bottom 3 of column
-#q22 = [-4.4, -1.8, 6.5, 0, 0, 0, 1, 0, 0, 1, Pi] # ultimate goal!
+#q22 = [2.6, -1.4, 0.5, 0, 0, 0, 1, -0.1, 0, 0, 1, Pi] # first plateform
+#q22 = [0.7, 1.55, 0.4, 0, 0, 0, 1, -0.1, 0, 0, 1, Pi] # second plateform
+#q22 = [-1.7, -1.5, 0.4, 0, 0, 0, 1, -0.1, 0, 0, 1, Pi] # third plateform
+q22 = [-3.5, 1.7, 0.6, 0, 0, 0, 1, -0.1, 0, 0, 1, Pi] # bottom of column
+#q22 = [-3.3, 1.5, 3.4, 0, 0, 0, 1, -0.1, 0, 0, 1, Pi] # in column
+#q22 = [-4.2, 0.9, 1.7, 0, 0, 0, 1, -0.1, 0, 0, 1, Pi] # bottom 1 of column
+#q22 = [-4.4, 0.9, 4.1, 0, 0, 0, 1, -0.1, 0, 0, 1, Pi] # bottom 3 of column
+#q22 = [-4.4, -1.8, 6.5, 0, 0, 0, 1, -0.1, 0, 0, 1, Pi] # ultimate goal!
 r(q22)
 
 
 q1 = cl.robot.projectOnObstacle (q11, 0.001); q2 = cl.robot.projectOnObstacle (q22, 0.001)
+robot.isConfigValid(q1); robot.isConfigValid(q2)
 
 ps.setInitialConfig (q1); ps.addGoalConfig (q2)
 ps.solve ()
 
 samples = plotSampleSubPath (cl, r, 0, 20, "curvy", [0,0,1,1])
+plotConeWaypoints (cl, 0, r, "wp", "friction_cone")
 
 samples2 = plotSampleSubPath (cl, r, 2, 20, "curvy2", [0,0.4,0.7,1])
 
@@ -90,6 +94,7 @@ plotFrame (r, "frame", [0,0,0], 0.5)
 
 plotCone (q, cl, r, "yep", "friction_cone2")
 plotConeWaypoints (cl, 0, r, "wp", "friction_cone2")
+
 
 plotThetaPlane (q1, q2, r, "ThetaPlane")
 r.client.gui.removeFromGroup ("ThetaPlane", r.sceneName)
@@ -161,22 +166,24 @@ plt.show()
 # --------------------------------------------------------------------#
 
 ## Add light to scene ##
-lightName = "li3"
+lightName = "li2"
 r.client.gui.addLight (lightName, r.windowId, 0.001, [0.5,0.5,0.5,1])
 r.client.gui.addToGroup (lightName, r.sceneName)
 #r.client.gui.applyConfiguration (lightName, [6,0,0.5,1,0,0,0])
 #r.client.gui.applyConfiguration (lightName, [4.5,-3,1,1,0,0,0])
-r.client.gui.applyConfiguration (lightName, [-4,-1,3,1,0,0,0])
+#r.client.gui.applyConfiguration (lightName, [-4,-1,3,1,0,0,0])
+r.client.gui.applyConfiguration (lightName, [4,3,0.5,1,0,0,0])
 r.client.gui.refresh ()
 #r.client.gui.removeFromGroup (lightName, r.sceneName)
 
 # --------------------------------------------------------------------#
 ## Video capture ##
 import time
-pp.dt = 0.02; r(q1)
+pp.dt = 0.02
+r(q1)
 r.startCapture ("capture","png")
 r(q1); time.sleep(0.2)
-#pp(1)
+pp(1)
 r(q2); time.sleep(1)
 r.stopCapture ()
 
@@ -185,7 +192,7 @@ ffmpeg -r 50 -i capture_0_%d.png -r 25 -vcodec libx264 video.mp4
 x=0; for i in *png; do counter=$(printf %04d $x); ln "$i" new"$counter".png; x=$(($x+1)); done
 ffmpeg -r 50 -i new%04d.png -r 25 -vcodec libx264 video.mp4
 mencoder video.mp4 -channels 6 -ovc xvid -xvidencopts fixed_quant=4 -vf harddup -oac pcm -o video.avi
-ffmpeg -i untitled.mp4 -vcodec libx264 -crf 24 video.mp4
+ffmpeg -i video.mp4 -vcodec libx264 -crf 24 video2.mp4
 
 # --------------------------------------------------------------------#
 

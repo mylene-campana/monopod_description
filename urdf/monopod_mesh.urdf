@@ -9,16 +9,13 @@
     <visual>
       <origin xyz="0 0 0"/>
       <geometry>
-        <sphere radius="0.2"/>
+        <mesh filename="package://monopod_description/meshes/monopod_base.dae"/>
       </geometry>
-      <material name="gray">
-        <color rgba="0.3 0.3 0.3 1"/>
-      </material>
     </visual>
     <collision>
       <origin xyz="0 0 0"/>
       <geometry>
-        <sphere radius="0.2"/>
+        <mesh filename="package://monopod_description/meshes/monopod_base.dae"/>
       </geometry>
     </collision>
   </link>
@@ -33,7 +30,7 @@
     <visual>
       <origin xyz="0 0 0"/>
       <geometry>
-        <sphere radius="0.4"/>
+        <sphere radius="0.399"/>
       </geometry>
       <material name="green">
         <color rgba="0 0.8 0.1 0.1"/>
@@ -42,29 +39,7 @@
     <collision>
       <origin xyz="0 0 0"/>
       <geometry>
-        <sphere radius="0.4"/>
-      </geometry>
-     </collision>
-   </link>
-   
-   <joint name="j_rigid_leg" type="fixed">
-    <parent link="base_link"/>
-    <child link="l_rigid_leg"/>
-    <origin xyz="0 0 -0.248"/>
-  </joint>
-
-  <link name="l_rigid_leg">
-    <visual>
-      <origin xyz="0 0 0"/>
-      <geometry>
-        <cylinder length="0.1" radius="0.02"/>
-      </geometry>
-      <material name="gray"/>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0"/>
-      <geometry>
-        <cylinder length="0.1" radius="0.02"/>
+        <sphere radius="0.399"/>
       </geometry>
      </collision>
    </link>
@@ -72,7 +47,7 @@
   <joint name="j_mobile_leg" type="prismatic">
     <parent link="base_link"/>
     <child link="l_mobile_leg"/>
-    <origin xyz="0 0 -0.245"/>
+    <origin xyz="0 0 -0.249"/>
     <axis xyz="0 0 1"/>
     <limit lower="-0.1" upper="0" effort="1.0" velocity="1.0"/>
   </joint>
@@ -81,16 +56,13 @@
     <visual>
       <origin xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.099" radius="0.018"/>
+        <mesh filename="package://monopod_description/meshes/monopod_leg.dae"/>
       </geometry>
-      <material name="red">
-        <color rgba="1 0 0 1"/>
-      </material>
     </visual>
     <collision>
       <origin xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.099" radius="0.018"/>
+        <mesh filename="package://monopod_description/meshes/monopod_leg.dae"/>
       </geometry>
      </collision>
    </link>
